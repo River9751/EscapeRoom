@@ -26,7 +26,7 @@ class SimpleSharedPreference {
         checkFirstInstall()
     }
 
-    fun checkFirstInstall() {
+    private fun checkFirstInstall() {
         if (mPreferences.getInt(depositKey, -1) == -1) {
             val editor = mPreferences.edit()
             //餘額初始值

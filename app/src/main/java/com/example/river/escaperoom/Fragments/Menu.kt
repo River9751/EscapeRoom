@@ -1,4 +1,4 @@
-package com.example.river.escaperoom
+package com.example.river.escaperoom.Fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.river.escaperoom.MainActivity
+import com.example.river.escaperoom.R
+import com.example.river.escaperoom.SimpleSharedPreference
 import kotlinx.android.synthetic.main.fragment_menu.view.*
 
 
 class Menu : Fragment() {
 
-    lateinit var sp :SimpleSharedPreference
+    lateinit var sp : SimpleSharedPreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +31,7 @@ class Menu : Fragment() {
         view.start.setOnClickListener {
             sp.spentMoney()
             sp.addPlayRecord()
+            (activity as MainActivity).startCountDown()
             Toast.makeText(activity, "-10, ${sp.getDeposit()}", Toast.LENGTH_LONG).show()
             (activity as MainActivity).switchContent("Menu","MainRoom")
         }

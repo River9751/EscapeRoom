@@ -13,7 +13,9 @@ import android.widget.Toast
 class TestCustomView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
     /**
-     *
+     * Test Test Test Test
+     *  MainRoom 的 View，互動內容都寫在這邊
+     *  Fragment 只拿來放這個 View
      */
 
     val drawerRect = arrayListOf(0, 50, 100, 200) //left, top, right, bottom
@@ -21,7 +23,6 @@ class TestCustomView(context: Context?, attrs: AttributeSet?) : View(context, at
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
         checkRect(event!!.x.toInt(), event.y.toInt())
-//        Toast.makeText(context, "${event?.x}, ${event?.y}", Toast.LENGTH_LONG).show()
 
         return super.onTouchEvent(event)
     }
