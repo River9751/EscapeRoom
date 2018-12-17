@@ -13,7 +13,7 @@ import com.example.river.escaperoom.MainActivity
 import com.example.river.escaperoom.R
 import kotlinx.android.synthetic.main.fragment_clockroom.view.*
 
-class ClockRoom : Fragment() {
+class FailScreen : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = LayoutInflater
             .from(activity)
@@ -39,8 +39,4 @@ class ClockRoom : Fragment() {
         return view
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-    }
 }

@@ -12,25 +12,39 @@ class ClockDialog {
     val mContext: Context
     val timePickerDialog: TimePickerDialog
 
-    constructor(context: Context) {
+    constructor(context: Context, eCaller: E_ClockCaller) {
         mContext = context
 
-        //Add TimePicker
-//        timePickerDialog.setContentView()
-//        timePickerDialog = Dialog(context)
+        var hour = 0
+        var min = 0
 
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR_OF_DAY, 8)
-
-        val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
-        val min = calendar.get(Calendar.MINUTE)
+        when (eCaller) {
+            E_ClockCaller.FROM_CLOCK -> {
+                hour = Global.clockHour
+                min = Global.clockMinute
+            }
+            E_ClockCaller.FROM_PHONE -> {
+                hour = Global.phoneHour
+                min = Global.phoneMinute
+            }
+        }
 
         timePickerDialog = TimePickerDialog(
             context, object : TimePickerDialog.OnTimeSetListener {
                 override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                    Global.showToast(mContext, "${hourOfDay}, ${minute}", Toast.LENGTH_SHORT)
+                    //Global.showToast(mContext, "${hourOfDay}, ${minute}", Toast.LENGTH_SHORT)
+                    when (eCaller) {
+                        E_ClockCaller.FROM_CLOCK -> {
+                            Global.clockHour = hourOfDay
+                            Global.clockMinute = minute
+                        }
+                        E_ClockCaller.FROM_PHONE -> {
+                            Global.phoneHour = hourOfDay
+                            Global.phoneMinute = minute
+                        }
+                    }
                 }
-            }, hourOfDay, min, true
+            }, hour, min, true
         )
 
     }

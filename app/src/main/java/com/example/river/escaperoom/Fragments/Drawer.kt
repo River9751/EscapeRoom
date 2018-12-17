@@ -14,7 +14,7 @@ class Drawer : Fragment() {
 //            .from(activity)
 //            .inflate(R.layout.fragment_mainroom, container, false)
 
-        ClockDialog((activity as MainActivity)).show()
+//        ClockDialog((activity as MainActivity),E_).show()
 
         //val view = TestCustomView(activity as MainActivity, null)
         return super.onCreateView(inflater, container, savedInstanceState)

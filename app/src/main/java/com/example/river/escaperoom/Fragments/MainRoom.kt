@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.river.escaperoom.Dialogs.ClockDialog
+import com.example.river.escaperoom.Dialogs.LockDialog
+import com.example.river.escaperoom.Dialogs.PhoneDialog
 import com.example.river.escaperoom.Global
 import com.example.river.escaperoom.MainActivity
 import com.example.river.escaperoom.R
@@ -19,10 +21,16 @@ class MainRoom : Fragment() {
             .inflate(R.layout.fragment_mainroom, container, false)
 
         view.lock.setOnClickListener {
-            Global.showToast((activity as MainActivity), "門鎖住了，無法打開...", Toast.LENGTH_SHORT)
-            //ClockDialog((activity as MainActivity)).show()
+            if (Global.isReadyToGo()) {
+                LockDialog((activity as MainActivity)).show()
+            } else {
+                Global.showToast((activity as MainActivity), "門鎖住了，無法打開...", Toast.LENGTH_SHORT)
+            }
         }
 
+        view.phone.setOnClickListener {
+            PhoneDialog(activity as MainActivity).show()
+        }
 
         view.floatingLeft.setOnClickListener {
             (activity as MainActivity).switchContent("MainRoom", "ClockRoom")
@@ -31,8 +39,8 @@ class MainRoom : Fragment() {
         view.floatingRight.setOnClickListener {
             (activity as MainActivity).switchContent("MainRoom", "DeskRoom")
         }
-        //val view = TestCustomView(activity as MainActivity, null)
-        return view//super.onCreateView(inflater, container, savedInstanceState)
+
+        return view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

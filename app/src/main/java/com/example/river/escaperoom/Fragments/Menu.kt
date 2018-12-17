@@ -32,7 +32,6 @@ class Menu : Fragment() {
             sp.spentMoney()
             sp.addPlayRecord()
             (activity as MainActivity).startCountDown()
-            Toast.makeText(activity, "-10, ${sp.getDeposit()}", Toast.LENGTH_LONG).show()
             (activity as MainActivity).switchContent("Menu","MainRoom")
         }
 
@@ -46,7 +45,6 @@ class Menu : Fragment() {
         }
 
         return view
-        //super.onCreateView(inflater, container, savedInstanceState)
     }
 
 

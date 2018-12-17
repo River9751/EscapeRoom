@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.river.escaperoom.Dialogs.DrawerOpenDialog
+import com.example.river.escaperoom.Dialogs.PhotoDialog
 import com.example.river.escaperoom.MainActivity
 import com.example.river.escaperoom.R
 import kotlinx.android.synthetic.main.fragment_deskroom.view.*
@@ -20,6 +21,11 @@ class DeskRoom : Fragment() {
         view.drawer.setOnClickListener {
             DrawerOpenDialog(activity as MainActivity).show()
         }
+
+        view.photo.setOnClickListener {
+            PhotoDialog(activity as MainActivity).show()
+        }
+
 
         view.floatingLeft.setOnClickListener {
             (activity as MainActivity).switchContent("DeskRoom", "MainRoom")

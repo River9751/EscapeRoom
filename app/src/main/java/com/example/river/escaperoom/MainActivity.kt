@@ -6,10 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
-import com.example.river.escaperoom.Fragments.ClockRoom
-import com.example.river.escaperoom.Fragments.DeskRoom
-import com.example.river.escaperoom.Fragments.MainRoom
-import com.example.river.escaperoom.Fragments.Menu
+import com.example.river.escaperoom.Fragments.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.Clock
 import java.util.concurrent.TimeUnit
@@ -22,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainRoom: MainRoom
     private lateinit var deskRoom: DeskRoom
     private lateinit var clockRoom: ClockRoom
+    private lateinit var finishScreen: FinishScreen
+    private lateinit var failScreen: FailScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         mainRoom = MainRoom()
         deskRoom = DeskRoom()
         clockRoom = ClockRoom()
+        finishScreen = FinishScreen()
+        failScreen = FailScreen()
 
         //加入 tag
         val trans = supportFragmentManager.beginTransaction()
@@ -57,12 +58,16 @@ class MainActivity : AppCompatActivity() {
         trans.add(R.id.container, mainRoom, "MainRoom")
         trans.add(R.id.container, deskRoom, "DeskRoom")
         trans.add(R.id.container, clockRoom, "ClockRoom")
+        trans.add(R.id.container, finishScreen, "FinishScreen")
+        trans.add(R.id.container, failScreen, "FailScreen")
 
         //顯示第一個 Fragment
         trans
             .hide(mainRoom)
             .hide(deskRoom)
             .hide(clockRoom)
+            .hide(finishScreen)
+            .hide(failScreen)
             .show(menu).commit()
     }
 
@@ -111,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                         TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
                     )
                 )
-
+                Global.starCount = millisUntilFinished.toFloat() / 300000 * 5
                 countDown.text = ms
             }
         }
@@ -119,8 +124,22 @@ class MainActivity : AppCompatActivity() {
         countDown.visibility = View.VISIBLE
     }
 
+    fun stopCountDown() {
+        countDownTimer.cancel()
+        countDown.visibility = View.INVISIBLE
+    }
+
     fun gameOver() {
         Global.showToast(this, "Game Over!", Toast.LENGTH_LONG)
+    }
+
+    fun gameFinish() {
+//        switchContent("")
+    }
+
+    fun setRatingStar() {
+        val fg = supportFragmentManager.findFragmentByTag("FinishScreen")
+        (fg as FinishScreen).setStar()
     }
 
     /**
@@ -132,8 +151,7 @@ class MainActivity : AppCompatActivity() {
                 super.onBackPressed()
             }
             "MainRoom" -> {
-                countDownTimer.cancel()
-                countDown.visibility = View.INVISIBLE
+                stopCountDown()
                 switchContent("MainRoom", "Menu")
             }
             else -> {
