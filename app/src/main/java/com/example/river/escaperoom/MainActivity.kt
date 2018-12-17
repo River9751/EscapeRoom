@@ -1,17 +1,17 @@
 package com.example.river.escaperoom
 
-
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import com.example.river.escaperoom.Fragments.ClockRoom
+import com.example.river.escaperoom.Fragments.DeskRoom
 import com.example.river.escaperoom.Fragments.MainRoom
 import com.example.river.escaperoom.Fragments.Menu
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
+import java.time.Clock
 import java.util.concurrent.TimeUnit
 
 
@@ -20,14 +20,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currentFragment: Fragment
     private lateinit var menu: Menu
     private lateinit var mainRoom: MainRoom
+    private lateinit var deskRoom: DeskRoom
+    private lateinit var clockRoom: ClockRoom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //val sp = SimpleSharedPreference(this)
-        //main room
-        //touch area
 
         //隱藏倒數計時
         countDown.visibility = View.INVISIBLE
@@ -50,14 +48,22 @@ class MainActivity : AppCompatActivity() {
         currentFragment = Fragment()
         menu = Menu()
         mainRoom = MainRoom()
+        deskRoom = DeskRoom()
+        clockRoom = ClockRoom()
 
         //加入 tag
         val trans = supportFragmentManager.beginTransaction()
         trans.add(R.id.container, menu, "Menu")
         trans.add(R.id.container, mainRoom, "MainRoom")
+        trans.add(R.id.container, deskRoom, "DeskRoom")
+        trans.add(R.id.container, clockRoom, "ClockRoom")
 
         //顯示第一個 Fragment
-        trans.hide(mainRoom).show(menu).commit()
+        trans
+            .hide(mainRoom)
+            .hide(deskRoom)
+            .hide(clockRoom)
+            .show(menu).commit()
     }
 
     /**
@@ -82,10 +88,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    lateinit var countDownTimer: CountDownTimer
-    fun startCountDown() {
-        countDown.visibility = View.VISIBLE
 
+    /**
+     * 倒數計時器
+     */
+    private lateinit var countDownTimer: CountDownTimer
+
+    fun startCountDown() {
         countDownTimer = object : CountDownTimer(300000, 1000) {
             override fun onFinish() {
                 gameOver()
@@ -107,6 +116,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         countDownTimer.start()
+        countDown.visibility = View.VISIBLE
     }
 
     fun gameOver() {
@@ -122,6 +132,8 @@ class MainActivity : AppCompatActivity() {
                 super.onBackPressed()
             }
             "MainRoom" -> {
+                countDownTimer.cancel()
+                countDown.visibility = View.INVISIBLE
                 switchContent("MainRoom", "Menu")
             }
             else -> {
