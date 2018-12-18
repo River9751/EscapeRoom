@@ -6,6 +6,7 @@ import java.util.*
 
 object Global {
 
+    val baseURL: String = "http://1a77a175.ngrok.io"
     var phoneHour = 0
     var phoneMinute = 0
     var clockHour = 0
@@ -30,8 +31,8 @@ object Global {
         Toast.makeText(context, msg, duration).show()
     }
 
-    fun isReadyToGo():Boolean{
-        if (phoneHour == 11 && phoneMinute == 48 && clockHour == 20 && clockMinute == 18){
+    fun isReadyToGo(): Boolean {
+        if (phoneHour == 11 && phoneMinute == 48 && clockHour == 20 && clockMinute == 18) {
             return true
         }
         return false

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.river.escaperoom.Dialogs.ClockDialog
 import com.example.river.escaperoom.Dialogs.DwarfDialog
 import com.example.river.escaperoom.Dialogs.LockDialog
 import com.example.river.escaperoom.Dialogs.PhoneDialog

@@ -82,6 +82,16 @@ class SimpleSharedPreference {
         editor.apply()
     }
 
+    fun saveToken(token: String) {
+        val editor = mPreferences.edit()
+        editor.putString("token", token)
+        editor.apply()
+    }
+
+    fun getToken(): String? {
+        return mPreferences.getString("token", "")
+    }
+
     fun spentMoney() {
         //更新餘額
         var deposit = mPreferences.getInt(depositKey, 0)

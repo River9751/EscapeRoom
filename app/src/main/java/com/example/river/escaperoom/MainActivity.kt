@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.example.river.escaperoom.Fragments.*
+import com.example.river.escaperoom.Fragments.Member.Signin
+import com.example.river.escaperoom.Fragments.Member.Signup
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_signin.*
 import java.time.Clock
 import java.util.concurrent.TimeUnit
 
@@ -21,6 +24,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var clockRoom: ClockRoom
     private lateinit var finishScreen: FinishScreen
     private lateinit var failScreen: FailScreen
+    private lateinit var signin: Signin
+    private lateinit var signup: Signup
+
+
+    /**
+     * TimePicker * 2
+     * NumberPicker * 2
+     * RatingBar * 1
+     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +42,6 @@ class MainActivity : AppCompatActivity() {
         countDown.visibility = View.INVISIBLE
 
         initFragments()
-
-        /**
-         * Clock * 2
-         * NumberLock * 2
-         * Rating Bar * 1
-         */
     }
 
 
@@ -51,6 +57,8 @@ class MainActivity : AppCompatActivity() {
         clockRoom = ClockRoom()
         finishScreen = FinishScreen()
         failScreen = FailScreen()
+        signin = Signin()
+        signup = Signup()
 
         //加入 tag
         val trans = supportFragmentManager.beginTransaction()
@@ -60,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         trans.add(R.id.container, clockRoom, "ClockRoom")
         trans.add(R.id.container, finishScreen, "FinishScreen")
         trans.add(R.id.container, failScreen, "FailScreen")
+        trans.add(R.id.container, signin, "Signin")
+        trans.add(R.id.container, signup, "Signup")
 
         //顯示第一個 Fragment
         trans
@@ -68,7 +78,9 @@ class MainActivity : AppCompatActivity() {
             .hide(clockRoom)
             .hide(finishScreen)
             .hide(failScreen)
-            .show(menu).commit()
+            .hide(menu)
+            .hide(signup)
+            .show(signin).commit()
     }
 
     /**
@@ -133,10 +145,6 @@ class MainActivity : AppCompatActivity() {
         Global.showToast(this, "Game Over!", Toast.LENGTH_LONG)
     }
 
-    fun gameFinish() {
-//        switchContent("")
-    }
-
     fun setRatingStar() {
         val fg = supportFragmentManager.findFragmentByTag("FinishScreen")
         (fg as FinishScreen).setStar()
@@ -153,6 +161,9 @@ class MainActivity : AppCompatActivity() {
             "MainRoom" -> {
                 stopCountDown()
                 switchContent("MainRoom", "Menu")
+            }
+            "Signup" -> {
+                switchContent("Signup", "Signin")
             }
             else -> {
                 super.onBackPressed()
