@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.river.escaperoom.Dialogs.ClockDialog
+import com.example.river.escaperoom.Dialogs.DwarfDialog
 import com.example.river.escaperoom.Dialogs.LockDialog
 import com.example.river.escaperoom.Dialogs.PhoneDialog
 import com.example.river.escaperoom.Global
@@ -28,6 +29,10 @@ class MainRoom : Fragment() {
             }
         }
 
+        view.dwarf.setOnClickListener {
+            DwarfDialog(activity as MainActivity).show()
+        }
+
         view.phone.setOnClickListener {
             PhoneDialog(activity as MainActivity).show()
         }
@@ -41,10 +46,5 @@ class MainRoom : Fragment() {
         }
 
         return view
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
     }
 }

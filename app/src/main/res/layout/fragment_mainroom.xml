@@ -23,8 +23,8 @@
 
     <View
         android:id="@+id/phone"
-        android:layout_width="28dp"
-        android:layout_height="12dp"
+        android:layout_width="35dp"
+        android:layout_height="15dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -37,6 +37,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.923" />
 
+
+    <View
+        android:id="@+id/dwarf"
+        android:layout_width="35dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.144"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.843" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingLeft"
