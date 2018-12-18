@@ -14,6 +14,8 @@ object Global {
 
     var starCount = 5f
 
+    var accomplishmentList = arrayListOf<Accomplishment>()
+
     init {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR_OF_DAY, 8)

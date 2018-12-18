@@ -2,6 +2,7 @@ package com.example.river.escaperoom.Fragments.Member
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,11 +40,12 @@ class Signin : Fragment() {
                 object : IResponse {
                     override fun onSuccess(jsonObject: JSONObject) {
                         sp.saveToken(jsonObject["token"].toString())
-                        Global.showToast(
-                            activity as MainActivity,
-                            jsonObject.getString("response") + jsonObject["token"],
-                            Toast.LENGTH_SHORT
-                        )
+                        Log.d("Token", jsonObject["token"].toString())
+//                        Global.showToast(
+//                            activity as MainActivity,
+//                            jsonObject.getString("response") + jsonObject["token"],
+//                            Toast.LENGTH_SHORT
+//                        )
                         (activity as MainActivity).switchContent("Signin", "Menu")
                     }
 

@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        container.visibility = View.INVISIBLE //避免畫面先出現
         //隱藏倒數計時
         countDown.visibility = View.INVISIBLE
 
@@ -63,7 +64,8 @@ class MainActivity : AppCompatActivity() {
         signup = Signup()
     }
 
-    fun addFragmentTags() {
+    private fun addFragmentTags() {
+
         val trans = supportFragmentManager.beginTransaction()
         trans.add(R.id.container, menu, "Menu")
         trans.add(R.id.container, mainRoom, "MainRoom")
@@ -77,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         trans.commit()
     }
 
-    fun checkLoginStatus() {
+    private fun checkLoginStatus() {
         val token = SimpleSharedPreference(this).getToken()
         if (token == null) {
             showFirstPage(false)
@@ -88,6 +90,18 @@ class MainActivity : AppCompatActivity() {
         jsonObject.put("token", token)
         SimpleOkHttp(this).post("/api/profile", jsonObject.toString(), null, object : IResponse {
             override fun onSuccess(jsonObject: JSONObject) {
+                //把成就清單設定到 Global
+//                val responseObj = jsonObject.getJSONObject("response")
+//                val accomplish = responseObj.getJSONObject("Accomplishment")
+//                val hasFindLittleMan = accomplish.getString("FindLittleMan")
+//                val hasYouAreFilthyRich = accomplish.getString("YouAreFilthyRich")
+//                if (hasFindLittleMan == "true") {
+//                    Global.accomplishmentList.add(Accomplishment("FindLittleMan"))
+//                }
+//                if (hasYouAreFilthyRich == "true") {
+//                    Global.accomplishmentList.add(Accomplishment("YouAreFilthyRich"))
+//                }
+
                 showFirstPage(true)
             }
 
@@ -117,6 +131,7 @@ class MainActivity : AppCompatActivity() {
                 .hide(menu)
                 .show(signin).commit()
         }
+        container.visibility = View.VISIBLE
     }
 
 
