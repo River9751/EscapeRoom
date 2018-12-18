@@ -10,8 +10,7 @@ import com.example.river.escaperoom.Fragments.*
 import com.example.river.escaperoom.Fragments.Member.Signin
 import com.example.river.escaperoom.Fragments.Member.Signup
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_signin.*
-import java.time.Clock
+import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 
@@ -42,8 +41,11 @@ class MainActivity : AppCompatActivity() {
         countDown.visibility = View.INVISIBLE
 
         initFragments()
-    }
 
+        addFragmentTags()
+
+        checkLoginStatus()
+    }
 
     /**
      * 初始化所有 Fragment 實體
@@ -59,8 +61,9 @@ class MainActivity : AppCompatActivity() {
         failScreen = FailScreen()
         signin = Signin()
         signup = Signup()
+    }
 
-        //加入 tag
+    fun addFragmentTags() {
         val trans = supportFragmentManager.beginTransaction()
         trans.add(R.id.container, menu, "Menu")
         trans.add(R.id.container, mainRoom, "MainRoom")
@@ -71,17 +74,51 @@ class MainActivity : AppCompatActivity() {
         trans.add(R.id.container, signin, "Signin")
         trans.add(R.id.container, signup, "Signup")
 
+        trans.commit()
+    }
+
+    fun checkLoginStatus() {
+        val token = SimpleSharedPreference(this).getToken()
+        if (token == null) {
+            showFirstPage(false)
+            return
+        }
+        //檢查 token
+        val jsonObject = JSONObject()
+        jsonObject.put("token", token)
+        SimpleOkHttp(this).post("/api/profile", jsonObject.toString(), null, object : IResponse {
+            override fun onSuccess(jsonObject: JSONObject) {
+                showFirstPage(true)
+            }
+
+            override fun onFailure(msg: String) {
+                showFirstPage(false)
+            }
+        })
+    }
+
+    fun showFirstPage(passLogin: Boolean) {
         //顯示第一個 Fragment
+        val trans = supportFragmentManager.beginTransaction()
         trans
             .hide(mainRoom)
             .hide(deskRoom)
             .hide(clockRoom)
             .hide(finishScreen)
             .hide(failScreen)
-            .hide(menu)
             .hide(signup)
-            .show(signin).commit()
+
+        if (passLogin) {
+            trans
+                .hide(signin)
+                .show(menu).commit()
+        } else {
+            trans
+                .hide(menu)
+                .show(signin).commit()
+        }
     }
+
 
     /**
      * 切換內容頁
