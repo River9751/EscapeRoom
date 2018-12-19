@@ -41,18 +41,12 @@ class Signin : Fragment() {
                     override fun onSuccess(jsonObject: JSONObject) {
                         sp.saveToken(jsonObject["token"].toString())
                         Log.d("Token", jsonObject["token"].toString())
-//                        Global.showToast(
-//                            activity as MainActivity,
-//                            jsonObject.getString("response") + jsonObject["token"],
-//                            Toast.LENGTH_SHORT
-//                        )
                         (activity as MainActivity).switchContent("Signin", "Menu")
                     }
 
                     override fun onFailure(msg: String) {
                         Global.showToast(activity as MainActivity, msg, Toast.LENGTH_SHORT)
                     }
-
                 }
             )
         }

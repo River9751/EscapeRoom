@@ -20,6 +20,11 @@ class MainRoom : Fragment() {
             .from(activity)
             .inflate(R.layout.fragment_mainroom, container, false)
 
+        if (Global.viewAllItem != null){
+            view.lock.setImageResource(R.drawable.eye)
+            view.phone.setImageResource(R.drawable.eye)
+        }
+
         view.lock.setOnClickListener {
             if (Global.isReadyToGo()) {
                 LockDialog((activity as MainActivity)).show()

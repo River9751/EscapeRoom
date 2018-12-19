@@ -1,5 +1,6 @@
 package com.example.river.escaperoom
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var deskRoom: DeskRoom
     private lateinit var clockRoom: ClockRoom
     private lateinit var finishScreen: FinishScreen
-    private lateinit var failScreen: FailScreen
+    private lateinit var gameOverScreen: GameoverScreen
     private lateinit var signin: Signin
     private lateinit var signup: Signup
 
@@ -45,7 +46,25 @@ class MainActivity : AppCompatActivity() {
 
         addFragmentTags()
 
-        checkLoginStatus()
+        //checkLoginStatus()
+        test()
+    }
+
+    fun test() {
+        val trans = supportFragmentManager.beginTransaction()
+        trans
+
+            .hide(deskRoom)
+            .hide(clockRoom)
+            .hide(finishScreen)
+            .hide(gameOverScreen)
+            .hide(signup)
+            .hide(signin)
+            .show(menu)
+            .hide(mainRoom)
+            .commit()
+
+        container.visibility = View.VISIBLE
     }
 
     /**
@@ -59,11 +78,14 @@ class MainActivity : AppCompatActivity() {
         deskRoom = DeskRoom()
         clockRoom = ClockRoom()
         finishScreen = FinishScreen()
-        failScreen = FailScreen()
+        gameOverScreen = GameoverScreen()
         signin = Signin()
         signup = Signup()
     }
 
+    /**
+     * Fragment 加入 Tag
+     */
     private fun addFragmentTags() {
 
         val trans = supportFragmentManager.beginTransaction()
@@ -72,43 +94,79 @@ class MainActivity : AppCompatActivity() {
         trans.add(R.id.container, deskRoom, "DeskRoom")
         trans.add(R.id.container, clockRoom, "ClockRoom")
         trans.add(R.id.container, finishScreen, "FinishScreen")
-        trans.add(R.id.container, failScreen, "FailScreen")
+        trans.add(R.id.container, gameOverScreen, "GameoverScreen")
         trans.add(R.id.container, signin, "Signin")
         trans.add(R.id.container, signup, "Signup")
 
         trans.commit()
     }
 
+    /**
+     *
+     */
     private fun checkLoginStatus() {
         val token = SimpleSharedPreference(this).getToken()
-        if (token == null) {
+        //沒有 token 進入登入頁面
+        if (token == null || token == "") {
             showFirstPage(false)
             return
         }
-        //檢查 token
+        //直接進入選單頁面
+        // 1. 儲存 Profile 資訊 2. 儲存道具資訊
         val jsonObject = JSONObject()
         jsonObject.put("token", token)
-        SimpleOkHttp(this).post("/api/profile", jsonObject.toString(), null, object : IResponse {
-            override fun onSuccess(jsonObject: JSONObject) {
-                //把成就清單設定到 Global
-//                val responseObj = jsonObject.getJSONObject("response")
-//                val accomplish = responseObj.getJSONObject("Accomplishment")
-//                val hasFindLittleMan = accomplish.getString("FindLittleMan")
-//                val hasYouAreFilthyRich = accomplish.getString("YouAreFilthyRich")
-//                if (hasFindLittleMan == "true") {
-//                    Global.accomplishmentList.add(Accomplishment("FindLittleMan"))
-//                }
-//                if (hasYouAreFilthyRich == "true") {
-//                    Global.accomplishmentList.add(Accomplishment("YouAreFilthyRich"))
-//                }
+        jsonObject.put("game", "escapeRoom")
+        println("Token $token")
+        SimpleOkHttp(this).post(
+            "/api/profile",
+            jsonObject.toString(),
+            null, object : IResponse {
+                override fun onSuccess(jsonObject: JSONObject) {
+                    //成功拿到 Profile 接著拿使用者擁有道具項目
+                    requestItems()
+                }
 
-                showFirstPage(true)
-            }
+                override fun onFailure(msg: String) {
+                    //失敗回到登入頁
+                    Global.showToast(this@MainActivity, msg, Toast.LENGTH_SHORT)
+                    showFirstPage(false)
+                }
+            })
+    }
 
-            override fun onFailure(msg: String) {
-                showFirstPage(false)
+    fun requestItems() {
+        val token = SimpleSharedPreference(this).getToken()
+        val jsonObject = JSONObject()
+        jsonObject.put("token", token)
+        jsonObject.put("game", "escapeRoom")
+
+        SimpleOkHttp(this).post(
+            "/api/items",
+            jsonObject.toString(),
+            token,
+            object : IResponse {
+                override fun onSuccess(jsonObject: JSONObject) {
+//                    val list = arrayListOf<StoreItem>()
+                    //第一樣道具
+                    if (jsonObject.has("viewAll")) {
+                        val viewAll = jsonObject.getJSONObject("viewAll")
+                        val cost = viewAll.getInt("cost")
+                        val id = viewAll.getInt("id")
+                        //list.add(StoreItem(id, "顯示所有線索！", cost, R.drawable.view_all))
+                        Global.viewAllItem = StoreItem(id, "顯示所有線索！", cost, R.drawable.view_all,true)
+                    }
+
+                    //profile 和 道具都拿完，進入選單頁面
+                    showFirstPage(true)
+                }
+
+                override fun onFailure(msg: String) {
+                    Global.showToast(this@MainActivity, msg, Toast.LENGTH_SHORT)
+                    showFirstPage(false)
+                }
             }
-        })
+        )
+
     }
 
     fun showFirstPage(passLogin: Boolean) {
@@ -119,7 +177,7 @@ class MainActivity : AppCompatActivity() {
             .hide(deskRoom)
             .hide(clockRoom)
             .hide(finishScreen)
-            .hide(failScreen)
+            .hide(gameOverScreen)
             .hide(signup)
 
         if (passLogin) {
@@ -166,7 +224,8 @@ class MainActivity : AppCompatActivity() {
     fun startCountDown() {
         countDownTimer = object : CountDownTimer(300000, 1000) {
             override fun onFinish() {
-                gameOver()
+                stopCountDown()
+                switchContent(currentFragment.tag!!, "GameoverScreen")
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -193,10 +252,6 @@ class MainActivity : AppCompatActivity() {
         countDown.visibility = View.INVISIBLE
     }
 
-    fun gameOver() {
-        Global.showToast(this, "Game Over!", Toast.LENGTH_LONG)
-    }
-
     fun setRatingStar() {
         val fg = supportFragmentManager.findFragmentByTag("FinishScreen")
         (fg as FinishScreen).setStar()
@@ -207,15 +262,20 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onBackPressed() {
         when (currentFragment.tag) {
-            "Menu" -> {
-                super.onBackPressed()
+            "Signup" -> {
+                switchContent("Signup", "Signin")
             }
             "MainRoom" -> {
                 stopCountDown()
                 switchContent("MainRoom", "Menu")
             }
-            "Signup" -> {
-                switchContent("Signup", "Signin")
+            "DeskRoom" -> {
+                stopCountDown()
+                switchContent("DeskRoom", "Menu")
+            }
+            "ClockRoom" -> {
+                stopCountDown()
+                switchContent("ClockRoom", "Menu")
             }
             else -> {
                 super.onBackPressed()
@@ -223,3 +283,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+
+//class SimpleTimer {
+//
+//    private constructor() {
+//
+//    }
+//
+//    companion object {
+//        var mTimer: CountDownTimer? = null
+//        fun getTimera():CountDownTimer {
+//            if (mTimer == null) {
+//                mTimer = object : CountDownTimer(300000, 1000) {
+//                    override fun onFinish() {
+//                        //gameOver()
+//                    }
+//
+//                    override fun onTick(millisUntilFinished: Long) {
+//                        val ms = String.format(
+//                            "%02d:%02d",
+//                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) -
+//                                    TimeUnit.HOURS.toMinutes(
+//                                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished)
+//                                    ),
+//                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+//                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
+//                            )
+//                        )
+//                        Global.starCount = millisUntilFinished.toFloat() / 300000 * 5
+//                        //countDown.text = ms
+//                    }
+//                }
+//            }
+//            return mTimer
+//        }
+//    }
+//}

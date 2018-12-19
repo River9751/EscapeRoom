@@ -6,15 +6,19 @@ import java.util.*
 
 object Global {
 
-    val baseURL: String = "http://1a77a175.ngrok.io"
+    val baseURL: String = "http://b8069abb.ngrok.io"
     var phoneHour = 0
     var phoneMinute = 0
     var clockHour = 0
     var clockMinute = 0
 
+
     var starCount = 5f
 
-    var accomplishmentList = arrayListOf<Accomplishment>()
+    //道具
+    var viewAllItem:StoreItem? = null//StoreItem(0, "", 0, 0,false)
+
+
 
     init {
         val calendar = Calendar.getInstance()

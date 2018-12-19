@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.river.escaperoom.Dialogs.DrawerOpenDialog
 import com.example.river.escaperoom.Dialogs.PhotoDialog
+import com.example.river.escaperoom.Global
 import com.example.river.escaperoom.MainActivity
 import com.example.river.escaperoom.R
 import kotlinx.android.synthetic.main.fragment_deskroom.view.*
@@ -17,6 +18,11 @@ class DeskRoom : Fragment() {
         val view = LayoutInflater
             .from(activity)
             .inflate(R.layout.fragment_deskroom, container, false)
+
+        if (Global.viewAllItem != null) {
+            view.drawer.setImageResource(R.drawable.eye)
+            view.photo.setImageResource(R.drawable.eye)
+        }
 
         view.drawer.setOnClickListener {
             DrawerOpenDialog(activity as MainActivity).show()
@@ -36,10 +42,5 @@ class DeskRoom : Fragment() {
         }
 
         return view
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
     }
 }
