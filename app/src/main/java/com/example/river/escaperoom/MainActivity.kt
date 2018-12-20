@@ -153,8 +153,15 @@ class MainActivity : AppCompatActivity() {
                         val viewAll = response.getJSONObject("viewAll")
                         val cost = viewAll.getInt("cost")
                         val id = viewAll.getInt("id")
+                        Global.purchased = true
+
                         //list.add(StoreItem(id, "顯示所有線索！", cost, R.drawable.view_all))
-                        Global.viewAllItem = StoreItem(id, "顯示所有線索！", cost, R.drawable.view_all,true)
+                        Global.viewAllItem = StoreItem(
+                            id,
+                            "顯示所有線索！",
+                            cost,
+                            R.drawable.view_all,
+                           true)
                     }
 
                     //profile 和 道具都拿完，進入選單頁面

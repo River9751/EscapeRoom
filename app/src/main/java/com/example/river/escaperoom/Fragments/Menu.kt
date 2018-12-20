@@ -117,9 +117,8 @@ class Menu : Fragment() {
 
         view.store.setOnClickListener {
             val intent = Intent()
-            intent.setClass(activity as MainActivity, StoreActivity::class.java)
-            startActivity(intent)
-            return@setOnClickListener
+
+//            return@setOnClickListener
             //可以登入應該有 Token
             val token = SimpleSharedPreference(activity as MainActivity).getToken()
             val jsonObject = JSONObject()

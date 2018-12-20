@@ -32,6 +32,8 @@ class StoreAdapter(val ctx: Context, var list: ArrayList<StoreItem>) :
             v.itemImage.setImageResource(list[position].imageId)
             v.purchase.isEnabled = !list[position].purchased
             v.purchase.text = if (list[position].purchased) "Purchased" else "Purchase"
+//            v.purchase.isEnabled = !Global.purchased
+//            v.purchase.text = if (Global.purchased) "Purchased" else "Purchase"
 
             v.purchase.setOnClickListener {
                 doPurchase(list[position].id)
@@ -49,11 +51,15 @@ class StoreAdapter(val ctx: Context, var list: ArrayList<StoreItem>) :
 
         val jsonObject = JSONObject()
         jsonObject.put("token", token)
-        jsonObject.put("id", id.toString())
+        jsonObject.put("item", id)
         SimpleOkHttp(ctx).post("/api/purchase", jsonObject.toString(), null, object : IResponse {
             override fun onSuccess(jsonObject: JSONObject) {
+                val msg = jsonObject.getString("remainingPoints")
+                Global.showToast(ctx, "購買成功！,餘額$msg", Toast.LENGTH_SHORT)
                 val target = list.first { x -> x.id == id }
                 target.purchased = true
+                Global.purchased = true
+                //Global.viewAllItem = StoreItem(id,"",100,R.drawable.view_all,true)
                 notifyDataSetChanged()
             }
 

@@ -18,6 +18,7 @@ object Global {
     //道具
     var viewAllItem:StoreItem? = null//StoreItem(0, "", 0, 0,false)
 
+    var purchased = false
 
 
     init {
