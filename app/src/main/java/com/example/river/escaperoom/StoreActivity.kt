@@ -11,12 +11,17 @@ class StoreActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_items)
 
-        val list = arrayListOf<StoreItem>()
-        list.add(StoreItem(1, "FakeItemCCCCCFFC", 100, R.drawable.view_all, true))
-        list.add(StoreItem(2, "FakeItem", 100, R.drawable.view_all, Global.viewAllItem != null))
+        var id = 0
 
+        if (Global.viewAllItem != null) {
+            id = Global.viewAllItem!!.id
+        }
+
+        val list = arrayListOf<StoreItem>()
+        list.add(StoreItem(1, "顯示所有線索位置！", 100, R.drawable.view_all, Global.viewAllItem != null))
+//        list.add(StoreItem(2, "顯示所有線索位置！", 200, R.drawable.view_all, true))
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = StoreAdapter(list)
+        recyclerView.adapter = StoreAdapter(this, list)
     }
 }

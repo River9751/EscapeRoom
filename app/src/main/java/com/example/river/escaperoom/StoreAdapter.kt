@@ -1,12 +1,16 @@
 package com.example.river.escaperoom
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.android.synthetic.main.store.view.*
+import org.json.JSONObject
 
-class StoreAdapter(var list: ArrayList<StoreItem>) : RecyclerView.Adapter<StoreAdapter.CustomViewHolder>() {
+class StoreAdapter(val ctx: Context, var list: ArrayList<StoreItem>) :
+    RecyclerView.Adapter<StoreAdapter.CustomViewHolder>() {
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): CustomViewHolder {
 
         val v = LayoutInflater.from(p0.context).inflate(R.layout.store, p0, false)
@@ -28,6 +32,35 @@ class StoreAdapter(var list: ArrayList<StoreItem>) : RecyclerView.Adapter<StoreA
             v.itemImage.setImageResource(list[position].imageId)
             v.purchase.isEnabled = !list[position].purchased
             v.purchase.text = if (list[position].purchased) "Purchased" else "Purchase"
+
+            v.purchase.setOnClickListener {
+                doPurchase(list[position].id)
+            }
         }
+    }
+
+    fun doPurchase(id: Int) {
+        /*
+        {
+    "token": "yourToken", "id": 1 (string)
+}
+         */
+        val token = SimpleSharedPreference(ctx).getToken()!!
+
+        val jsonObject = JSONObject()
+        jsonObject.put("token", token)
+        jsonObject.put("id", id.toString())
+        SimpleOkHttp(ctx).post("/api/purchase", jsonObject.toString(), null, object : IResponse {
+            override fun onSuccess(jsonObject: JSONObject) {
+                val target = list.first { x -> x.id == id }
+                target.purchased = true
+                notifyDataSetChanged()
+            }
+
+            override fun onFailure(msg: String) {
+                Global.showToast(ctx, msg, Toast.LENGTH_SHORT)
+            }
+
+        })
     }
 }

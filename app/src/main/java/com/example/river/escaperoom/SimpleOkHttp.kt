@@ -54,7 +54,6 @@ class SimpleOkHttp {
                 val responseString = response.body()?.string()!!
                 Log.d("Response", responseString)
 
-
                 Handler(ctx.mainLooper).post {
                     if(responseString == ""){
                         callback.onFailure("No Response")

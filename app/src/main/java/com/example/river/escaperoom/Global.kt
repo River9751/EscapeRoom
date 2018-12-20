@@ -6,7 +6,7 @@ import java.util.*
 
 object Global {
 
-    val baseURL: String = "http://b8069abb.ngrok.io"
+    val baseURL: String = "http://ead729ee.ngrok.io"
     var phoneHour = 0
     var phoneMinute = 0
     var clockHour = 0

@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity() {
 
         addFragmentTags()
 
-        //checkLoginStatus()
-        test()
+        checkLoginStatus()
+        //test()
     }
 
     fun test() {
@@ -148,8 +148,9 @@ class MainActivity : AppCompatActivity() {
                 override fun onSuccess(jsonObject: JSONObject) {
 //                    val list = arrayListOf<StoreItem>()
                     //第一樣道具
-                    if (jsonObject.has("viewAll")) {
-                        val viewAll = jsonObject.getJSONObject("viewAll")
+                    val response = jsonObject.getJSONObject("response")
+                    if (response.has("viewAll")) {
+                        val viewAll = response.getJSONObject("viewAll")
                         val cost = viewAll.getInt("cost")
                         val id = viewAll.getInt("id")
                         //list.add(StoreItem(id, "顯示所有線索！", cost, R.drawable.view_all))
