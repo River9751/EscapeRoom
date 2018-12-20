@@ -1,6 +1,5 @@
 package com.example.river.escaperoom
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
@@ -43,28 +42,8 @@ class MainActivity : AppCompatActivity() {
         countDown.visibility = View.INVISIBLE
 
         initFragments()
-
         addFragmentTags()
-
         checkLoginStatus()
-        //test()
-    }
-
-    fun test() {
-        val trans = supportFragmentManager.beginTransaction()
-        trans
-
-            .hide(deskRoom)
-            .hide(clockRoom)
-            .hide(finishScreen)
-            .hide(gameOverScreen)
-            .hide(signup)
-            .hide(signin)
-            .show(menu)
-            .hide(mainRoom)
-            .commit()
-
-        container.visibility = View.VISIBLE
     }
 
     /**
@@ -122,13 +101,22 @@ class MainActivity : AppCompatActivity() {
             jsonObject.toString(),
             null, object : IResponse {
                 override fun onSuccess(jsonObject: JSONObject) {
-                    //成功拿到 Profile 接著拿使用者擁有道具項目
-                    requestItems()
+                    //成功拿到 Profile
+                    val response = jsonObject.getJSONObject("response")
+                    try {
+                        val purchasedItems = response.getJSONArray("PurchasedItems")
+                        Global.purchased = purchasedItems.length() > 0
+                    } catch (ex: Exception) {
+                        Global.purchased = false
+                    }
+
+                    showFirstPage(true)
                 }
 
                 override fun onFailure(msg: String) {
                     //失敗回到登入頁
                     Global.showToast(this@MainActivity, msg, Toast.LENGTH_SHORT)
+
                     showFirstPage(false)
                 }
             })
@@ -147,6 +135,19 @@ class MainActivity : AppCompatActivity() {
             object : IResponse {
                 override fun onSuccess(jsonObject: JSONObject) {
 //                    val list = arrayListOf<StoreItem>()
+                    /*
+                    {
+    "result": "true",
+    "response": {
+        "email": "tn710617ab@gmail.com",
+        "RemainingPoint": 0,
+        "Accomplishment": {
+            "FindLittleMan": "true",
+            "YouAreFilthyRich": "false"
+        }
+    }
+}
+                     */
                     //第一樣道具
                     val response = jsonObject.getJSONObject("response")
                     if (response.has("viewAll")) {
@@ -161,7 +162,8 @@ class MainActivity : AppCompatActivity() {
                             "顯示所有線索！",
                             cost,
                             R.drawable.view_all,
-                           true)
+                            true
+                        )
                     }
 
                     //profile 和 道具都拿完，進入選單頁面
@@ -217,8 +219,10 @@ class MainActivity : AppCompatActivity() {
 
             if (!to.isAdded) {
                 trans.hide(from).add(R.id.container, to, tagTo).commit()
+                to.onResume()
             } else {
                 trans.hide(from).show(to).commit()
+                to.onResume()
             }
         }
     }

@@ -5,24 +5,39 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.river.escaperoom.Dialogs.ClockDialog
 import com.example.river.escaperoom.Dialogs.E_ClockCaller
 import com.example.river.escaperoom.Dialogs.NumberTenDialog
 import com.example.river.escaperoom.Global
 import com.example.river.escaperoom.MainActivity
 import com.example.river.escaperoom.R
+import kotlinx.android.synthetic.main.fragment_clockroom.*
 import kotlinx.android.synthetic.main.fragment_clockroom.view.*
 
 class ClockRoom : Fragment() {
+
+    override fun onResume() {
+        super.onResume()
+
+        if (Global.purchased) {
+            clock.setImageResource(R.drawable.eye)
+            ten.setImageResource(R.drawable.eye)
+        } else {
+            clock.setImageResource(android.R.color.transparent)
+            ten.setImageResource(android.R.color.transparent)
+        }
+        clock.invalidate()
+        ten.invalidate()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = LayoutInflater
             .from(activity)
             .inflate(R.layout.fragment_clockroom, container, false)
 
-        if (Global.viewAllItem != null) {
-            view.clock.setImageResource(R.drawable.eye)
-            view.ten.setImageResource(R.drawable.eye)
-        }
+
+
 
         view.clock.setOnClickListener {
             ClockDialog((activity as MainActivity), E_ClockCaller.FROM_CLOCK).show()
@@ -43,4 +58,6 @@ class ClockRoom : Fragment() {
 
         return view
     }
+
+
 }

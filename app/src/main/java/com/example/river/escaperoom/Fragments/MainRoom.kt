@@ -11,19 +11,30 @@ import com.example.river.escaperoom.*
 import com.example.river.escaperoom.Dialogs.DwarfDialog
 import com.example.river.escaperoom.Dialogs.LockDialog
 import com.example.river.escaperoom.Dialogs.PhoneDialog
+import kotlinx.android.synthetic.main.fragment_mainroom.*
 import kotlinx.android.synthetic.main.fragment_mainroom.view.*
 import org.json.JSONObject
 
 class MainRoom : Fragment() {
+
+    override fun onResume() {
+        super.onResume()
+
+        if (Global.purchased) {
+            lock.setImageResource(R.drawable.eye)
+            phone.setImageResource(R.drawable.eye)
+        } else {
+            lock.setImageResource(android.R.color.transparent)
+            phone.setImageResource(android.R.color.transparent)
+        }
+        lock.invalidate()
+        phone.invalidate()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = LayoutInflater
             .from(activity)
             .inflate(R.layout.fragment_mainroom, container, false)
-
-        if (Global.viewAllItem != null){
-            view.lock.setImageResource(R.drawable.eye)
-            view.phone.setImageResource(R.drawable.eye)
-        }
 
         view.lock.setOnClickListener {
             if (Global.isReadyToGo()) {

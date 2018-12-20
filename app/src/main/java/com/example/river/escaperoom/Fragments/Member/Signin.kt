@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.example.river.escaperoom.*
 import kotlinx.android.synthetic.main.fragment_signin.view.*
 import org.json.JSONObject
+import java.lang.Exception
 
 
 class Signin : Fragment() {
@@ -41,7 +42,8 @@ class Signin : Fragment() {
                     override fun onSuccess(jsonObject: JSONObject) {
                         sp.saveToken(jsonObject["token"].toString())
                         Log.d("Token", jsonObject["token"].toString())
-                        (activity as MainActivity).switchContent("Signin", "Menu")
+                        getData(jsonObject["token"].toString())
+
                     }
 
                     override fun onFailure(msg: String) {
@@ -58,5 +60,34 @@ class Signin : Fragment() {
         }
 
         return view
+    }
+
+    fun getData(token: String) {
+        val jsonObject = JSONObject()
+        jsonObject.put("token", token)
+        jsonObject.put("game", "escapeRoom")
+        println("Token $token")
+        SimpleOkHttp(activity as MainActivity).post(
+            "/api/profile",
+            jsonObject.toString(),
+            null, object : IResponse {
+                override fun onSuccess(jsonObject: JSONObject) {
+                    //成功拿到 Profile
+                    val response = jsonObject.getJSONObject("response")
+                    try {
+                        val purchasedItems = response.getJSONArray("PurchasedItems")
+                        Global.purchased = purchasedItems.length() > 0
+                    } catch (ex: Exception) {
+                        Global.purchased = false
+                    }
+                    //Global.showToast(activity as MainActivity, Global.purchased.toString(), Toast.LENGTH_SHORT)
+                    (activity as MainActivity).switchContent("Signin", "Menu")
+                }
+
+                override fun onFailure(msg: String) {
+                    //失敗回到登入頁
+                    Global.showToast(activity as MainActivity, msg, Toast.LENGTH_SHORT)
+                }
+            })
     }
 }

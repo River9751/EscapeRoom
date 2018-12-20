@@ -110,6 +110,7 @@ class Menu : Fragment() {
         }
 
         view.logout.setOnClickListener {
+            Global.purchased = false
             //更新 token 為空字串
             sp.saveToken("")
             (activity as MainActivity).switchContent("Menu", "Signin")
